@@ -1,6 +1,6 @@
 # MeetingMind
 
-AI-powered meeting intelligence platform. Upload or record meetings and get automatic transcription, speaker identification, action item extraction, sentiment analysis, and smart summaries — backed by a production-ready Node.js/PostgreSQL stack.
+AI-powered meeting intelligence platform. Upload or record meetings and get automatic transcription, speaker identification, action item extraction, sentiment analysis, and smart summaries — backed by Node.js/PostgreSQL stack.
 
 ![MeetingMind Demo](demo/meetingmind-demo.gif)
 
@@ -181,7 +181,7 @@ cd MeetingMind
 
 # Configure backend
 cp backend/.env.example backend/.env
-# Edit backend/.env — set GEMINI_API_KEY
+# Edit backend/.env — set API_KEY
 
 # Start PostgreSQL + Redis + backend
 docker compose up -d
@@ -202,7 +202,7 @@ redis-server
 cd backend
 npm install
 cp .env.example .env
-# Edit backend/.env — set GEMINI_API_KEY; leave DATABASE_URL unset to use SQLite
+# Edit backend/.env — set API_KEY; leave DATABASE_URL unset to use SQLite
 npm run dev
 
 # 3. Frontend (new terminal, from project root)
@@ -211,7 +211,7 @@ cp .env.example .env
 npm run dev
 ```
 
-> Without `GEMINI_API_KEY`, transcription and AI analysis fall back to mock data — the UI remains fully functional for development.
+> Without `API_KEY`, transcription and AI analysis fall back to mock data — the UI remains fully functional for development.
 
 ---
 
@@ -237,7 +237,7 @@ npm run dev
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GEMINI_API_KEY` | Yes* | Google AI API key for transcription, analysis, and embeddings. Falls back to mock data if unset. |
+| `API_KEY` | Yes* | Google AI API key for transcription, analysis, and embeddings. Falls back to mock data if unset. |
 | `REDIS_URL` | Yes | Redis connection URL |
 | `DATABASE_URL` | No | PostgreSQL connection string. If unset, SQLite is used automatically. |
 | `DATABASE_PATH` | No | SQLite file path (default: `./data/meetingmind.db`) |
@@ -270,17 +270,6 @@ Files over 15 MB are split by ffmpeg into 10-minute segments. Each segment is tr
 - Global: 300 requests / 15 min
 - Upload endpoint: 20 requests / hour
 - AI endpoints: 30 requests / minute
-
----
-
-## Security
-
-- All API keys and secrets live in `backend/.env` only — never in frontend code or `VITE_*` variables
-- `backend/.env` is gitignored; committed files contain only placeholder values
-- Credential files (`*.pem`, `*.key`, `*-service-account.json`) are gitignored
-- Helmet sets HTTP security headers (CSP, HSTS, X-Frame-Options, etc.) on all responses
-- Zod validates all request bodies before they reach route handlers
-- File uploads are validated by MIME type and extension before processing
 
 ---
 
