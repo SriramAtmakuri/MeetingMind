@@ -1,0 +1,25 @@
+node_modules/
+.env
+.env.local
+.env.production
+.env.staging
+uploads/
+storage/
+*.log
+.DS_Store
+dist/
+build/
+
+# Credentials & secrets — NEVER commit these
+firebase-service-account.json
+*-service-account.json
+*-service-account-key.json
+service-account*.json
+credentials.json
+gcloud-credentials.json
+*.pem
+*.p12
+*.pfx
+*.key
+secrets.json
+data/

@@ -1,0 +1,60 @@
+services:
+  # API Service
+  - type: web
+    name: meetingmind-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: DATABASE_PATH
+        value: /opt/render/project/data/meetingmind.db
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: meetingmind-redis
+          property: connectionString
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.onrender.com
+    healthCheckPath: /api/health
+    disk:
+      name: meetingmind-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+
+  # Worker Service
+  - type: worker
+    name: meetingmind-worker
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node src/worker.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DATABASE_PATH
+        value: /opt/render/project/data/meetingmind.db
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: meetingmind-redis
+          property: connectionString
+    disk:
+      name: meetingmind-data
+      mountPath: /opt/render/project/data
+      sizeGB: 1
+
+  # Redis Service
+  - type: redis
+    name: meetingmind-redis
+    plan: free
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
